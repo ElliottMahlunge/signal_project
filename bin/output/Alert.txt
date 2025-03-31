@@ -1,0 +1,6 @@
+Patient ID: 9, Timestamp: 1743451985049, Label: Alert, Data: triggered
+Patient ID: 6, Timestamp: 1743451985064, Label: Alert, Data: triggered
+Patient ID: 10, Timestamp: 1743451986062, Label: Alert, Data: triggered
+Patient ID: 9, Timestamp: 1743452005053, Label: Alert, Data: resolved
+Patient ID: 6, Timestamp: 1743452005053, Label: Alert, Data: resolved
+Patient ID: 10, Timestamp: 1743452006058, Label: Alert, Data: resolved

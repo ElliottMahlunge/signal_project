@@ -1,0 +1,2 @@
+Patient ID: 7, Timestamp: 1743451982120, Label: WhiteBloodCells, Data: 8.342846822729035
+Patient ID: 6, Timestamp: 1743451982121, Label: WhiteBloodCells, Data: 6.836490327696332
