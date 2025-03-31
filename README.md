@@ -61,7 +61,7 @@ java -jar target/cardio_generator-1.0-SNAPSHOT.jar --patient-count 100 --output 
 - `tcp:<port>`: Streams the simulated data to TCP clients connected to the specified port.
 ### Project Members
 
-Elliott Mahlunge id# 3649942
+Elliott Mahlunge id# 6349942
 
 ## License
 
