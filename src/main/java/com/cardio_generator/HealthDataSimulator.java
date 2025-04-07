@@ -5,7 +5,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.cardio_generator.generators.AlertGenerator;
-
 import com.cardio_generator.generators.BloodPressureDataGenerator;
 import com.cardio_generator.generators.BloodSaturationDataGenerator;
 import com.cardio_generator.generators.BloodLevelsDataGenerator;
@@ -25,6 +24,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/**
+ * The HealthDataSimulator is the main application that simulates health data.
+ * It is able to return data using selected output method for multiple patients
+ * The simulator can run different data generators and schedule them at varying times.
+ */
 public class HealthDataSimulator {
 
     private static int patientCount = 50; // Default number of patients
@@ -32,18 +36,27 @@ public class HealthDataSimulator {
     private static OutputStrategy outputStrategy = new ConsoleOutputStrategy(); // Default output strategy
     private static final Random random = new Random();
 
+    /**
+     * Entry point for the HealthDataSimulator. Parses command-line arguments,
+     * sets up the scheduler, and begins simulation.
+     *
+     * @param args Command-line arguments for configuring patient count and output type
+     * @throws IOException If file output directories cannot be created
+     */
     public static void main(String[] args) throws IOException {
-
         parseArguments(args);
-
         scheduler = Executors.newScheduledThreadPool(patientCount * 4);
-
         List<Integer> patientIds = initializePatientIds(patientCount);
         Collections.shuffle(patientIds); // Randomize the order of patient IDs
-
         scheduleTasksForPatients(patientIds);
     }
 
+    /**
+     * Parses command-line arguments to configure the simulation.
+     *
+     * @param args Array of command-line arguments
+     * @throws IOException If directories for file output cannot be created
+     */
     private static void parseArguments(String[] args) throws IOException {
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -56,8 +69,7 @@ public class HealthDataSimulator {
                         try {
                             patientCount = Integer.parseInt(args[++i]);
                         } catch (NumberFormatException e) {
-                            System.err
-                                    .println("Error: Invalid number of patients. Using default value: " + patientCount);
+                            System.err.println("Error: Invalid number of patients. Using default value: " + patientCount);
                         }
                     }
                     break;
@@ -76,17 +88,14 @@ public class HealthDataSimulator {
                         } else if (outputArg.startsWith("websocket:")) {
                             try {
                                 int port = Integer.parseInt(outputArg.substring(10));
-                                // Initialize your WebSocket output strategy here
                                 outputStrategy = new WebSocketOutputStrategy(port);
                                 System.out.println("WebSocket output will be on port: " + port);
                             } catch (NumberFormatException e) {
-                                System.err.println(
-                                        "Invalid port for WebSocket output. Please specify a valid port number.");
+                                System.err.println("Invalid port for WebSocket output. Please specify a valid port number.");
                             }
                         } else if (outputArg.startsWith("tcp:")) {
                             try {
                                 int port = Integer.parseInt(outputArg.substring(4));
-                                // Initialize your TCP socket output strategy here
                                 outputStrategy = new TcpOutputStrategy(port);
                                 System.out.println("TCP socket output will be on port: " + port);
                             } catch (NumberFormatException e) {
@@ -94,6 +103,7 @@ public class HealthDataSimulator {
                             }
                         } else {
                             System.err.println("Unknown output type. Using default (console).");
+
                         }
                     }
                     break;
@@ -105,12 +115,14 @@ public class HealthDataSimulator {
         }
     }
 
+    /**
+     * Displays the help message explaining usage and available options.
+     */
     private static void printHelp() {
         System.out.println("Usage: java HealthDataSimulator [options]");
         System.out.println("Options:");
         System.out.println("  -h                       Show help and exit.");
-        System.out.println(
-                "  --patient-count <count>  Specify the number of patients to simulate data for (default: 50).");
+        System.out.println("  --patient-count <count>  Specify the number of patients to simulate data for (default: 50).");
         System.out.println("  --output <type>          Define the output method. Options are:");
         System.out.println("                             'console' for console output,");
         System.out.println("                             'file:<directory>' for file output,");
@@ -118,10 +130,15 @@ public class HealthDataSimulator {
         System.out.println("                             'tcp:<port>' for TCP socket output.");
         System.out.println("Example:");
         System.out.println("  java HealthDataSimulator --patient-count 100 --output websocket:8080");
-        System.out.println(
-                "  This command simulates data for 100 patients and sends the output to WebSocket clients connected to port 8080.");
+        System.out.println("  This command simulates data for 100 patients and sends the output to WebSocket clients connected to port 8080.");
     }
 
+    /**
+     * Initializes a list of patient IDs starting from 1 to the specified patient count.
+     *
+     * @param patientCount Total number of patients
+     * @return A list of patient IDs
+     */
     private static List<Integer> initializePatientIds(int patientCount) {
         List<Integer> patientIds = new ArrayList<>();
         for (int i = 1; i <= patientCount; i++) {
@@ -130,6 +147,11 @@ public class HealthDataSimulator {
         return patientIds;
     }
 
+    /**
+     * Schedules simulation tasks for each patient using the various data generators.
+     *
+     * @param patientIds List of patient IDs to schedule tasks for
+     */
     private static void scheduleTasksForPatients(List<Integer> patientIds) {
         ECGDataGenerator ecgDataGenerator = new ECGDataGenerator(patientCount);
         BloodSaturationDataGenerator bloodSaturationDataGenerator = new BloodSaturationDataGenerator(patientCount);
@@ -146,6 +168,13 @@ public class HealthDataSimulator {
         }
     }
 
+    /**
+     * Method to schedule a repeated task using a ScheduledExecutorService.
+     *
+     * @param task     The Runnable task to be scheduled
+     * @param period   The repeat interval of the task
+     * @param timeUnit The unit of time for the interval
+     */
     private static void scheduleTask(Runnable task, long period, TimeUnit timeUnit) {
         scheduler.scheduleAtFixedRate(task, random.nextInt(5), period, timeUnit);
     }
