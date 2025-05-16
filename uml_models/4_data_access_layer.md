@@ -1,0 +1,3 @@
+# 4. Data Access Layer
+
+The Data Access Layer gets data from outside sources like TCP, WebSocket, or files. We have a DataListener interface that defines how to handle new data. Classes like TCPDataListener, WebSocketDataListener, and FileDataListener use this interface to get data from different places. After getting data, they use DataParser to turn raw data into PatientRecords. The DataSourceAdapter connects everything and makes sure data flows into the system. This setup means we can add new data sources easily by making a new listener class. The design is simple and keeps each part focused on one job.

@@ -1,0 +1,3 @@
+# 2. Data Storage System
+
+The Data Storage System saves all the patient data we get from the simulator. The DataStorage class is where we keep this data. Each data point is a PatientRecord, which has things like the patient ID, time, and health values. When we need to look up data, we use DataRetriever, which asks DataStorage for records. DataRetriever also checks with AccessControl to see if the user has permission to see the data. Another class, DataCleaner, helps delete old data after some time. This keeps the system from getting too full and makes sure we follow privacy rules. Each class has a simple role: storing, retrieving, cleaning, or checking access. This makes the system easy to maintain and update in the future.

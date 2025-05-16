@@ -1,0 +1,3 @@
+# 3. Patient Identification System
+
+The Patient Identification System matches incoming data to the right patient. When we get new data, the PatientIdentifier class checks which HospitalPatient it belongs to. If something goes wrong, like if no patient is found, it calls IdentityManager to log the problem. IdentityManager also checks if the matched patient is correct and active. The data itself is stored in PatientRecord objects. By keeping matching and checking separate, the system is clear and easy to fix if needed. Adding new ways to match patients would be easy because the system is built in small, focused parts.
